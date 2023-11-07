@@ -32,19 +32,22 @@
 
 
 ### 2.1 Project Overview
-**proxydock** is a software application designed to act as an intermediary between clients and servers over the HTTP protocol. It facilitates the forwarding of HTTP requests and responses, enabling users to access web content securely and anonymously.
+**proxydock** is a software application designed to act as an intermediary between clients and servers over the HTTP protocol. It facilitates the forwarding of HTTP requests and responses, enabling users to access web content securely and anonymously. 
+This software application acts as a reliable gateway, proxydock ensures communication between clients and servers while maintaining the utmost privacy and confidentiality for the end-users, also providing an gui for easier use.
+
 
 ### 2.2 Objective
+The fundamental objective of proxydock is to act as a stand-in user, effectively preserving the privacy, confidentiality of the real client and allowing him to track the traffic. 
+The application allows users to browse the internet, access web services, and communicate with servers, while providing useful functionalities. 
+
+
+##  3.  Functional Requirements
 - Intercept and inspect HTTP traffic for security and monitoring purposes.
 - Enable content filtering and access control for users on a network.
 - Editing/adding headers
-- Possibility of decompressing gzip/base64
-
-##  3.  Functional Requirements
-
 
 ## 4. Non-Functional Requirements
-
+- Possibility of decompressing gzip/base64
 
 ## 5. Architecture
 
@@ -58,6 +61,14 @@ Note over Proxy: Send request to HTTP Server
 HTTP Server->> Proxy: Send response
 Note over Proxy: Read response
 Proxy->>Client: Send response
+```
+
+```mermaid
+stateDiagram-v2
+[*] --> old_ip
+old_ip-->proxydock_server
+proxydock_server-->new_ip
+new_ip-->[*]
 ```
 
 ## 6. Technical Requirements
