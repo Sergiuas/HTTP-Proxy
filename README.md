@@ -15,11 +15,11 @@
    2.1 [Project Overview](#project-overview)
    2.2 [Objective](#objective)
 
-3. [Functional Requirements](#functional-requirements)
+4. [Functional Requirements](#functional-requirements)
 
-4. [Non-Functional Requirements](#non-functional-requirements)
+5. [Non-Functional Requirements](#non-functional-requirements)
 
-5. [Technical Requirements](#technical-requirements)
+6. [Technical Requirements](#technical-requirements)
 
 </details>
 
@@ -46,5 +46,19 @@
 ## 4. Non-Functional Requirements
 
 
-## 5. Technical Requirements
+## 5. Architecture
+
+```mermaid
+sequenceDiagram
+Client->>Proxy: Send HTTP request
+Proxy->>HTTP Server: 
+Note over Proxy: Read HTTP header
+Note over Proxy: Detect Host header
+Note over Proxy: Send request to HTTP Server
+HTTP Server->> Proxy: Send response
+Note over Proxy: Read response
+Proxy->>Client: Send response
+```
+
+## 6. Technical Requirements
 
