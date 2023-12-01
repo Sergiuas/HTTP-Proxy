@@ -55,6 +55,8 @@ void *handle_client(void *socket_desc) {
   int read_size;
   char *message, client_message[2000];
 
+  printf("Thread #%ld\n", pthread_self()); // Print the thread id;
+
   // Send message to the client socket:
   message = "Greetings! I am your connection handler\n";
   write(client_sock, message, strlen(message));
