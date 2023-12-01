@@ -27,8 +27,10 @@
 
 | Date       | Version  | Notes                                                   |
 | :----------|:---------|:--------------------------------------------------------|
-| 11/7/2023  | 1.0      | - Created repository                                    |
-|            |          |  - Added first version of product requirements document |
+| 7/11/2023  | 1.0      | - Created repository                                    |
+|            |          | - Added first version of product requirements document  |
+| 20/11/2023 | 1.1      | - Created a singlethreaded version of the app           |
+| 1/12/2023  | 1.2      | - Created a multithreaded version of the app            |
 
 ## 2. Introduction
 
