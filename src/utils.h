@@ -12,6 +12,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#define TASK_QUEUE_SIZE 100
+#define THREAD_MAX_COUNT 100
+
 // Task structure for a thread:
 typedef struct Task {
   void (*function)(void *); // Pointer to the function to be executed
@@ -29,11 +32,15 @@ typedef struct ThreadPool {
   int task_queue_rear;   // Index of the rear of the task queue
   bool shutdown;         // Flag to indicate if the pool should be shutdown
   pthread_mutex_t mutex; // Mutex for thread synchronization
+  pthread_cond_t done;   // Condition variable for thread synchronization
   pthread_cond_t cond;   // Condition variable for thread synchronization
 } ThreadPool;
 
 // Function to initialize a thread pool
 ThreadPool *thread_pool_init(int thread_count);
+
+// Thread function to execute the tasks in the queue:
+void *thread_function(void *arg);
 
 // Function to add a task to the thread pool
 void thread_pool_add_task(ThreadPool *pool, void (*task)(void *), void *arg);

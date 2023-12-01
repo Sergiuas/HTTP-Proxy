@@ -84,6 +84,7 @@ void *handle_client(void *socket_desc) {
 }
 
 int main(void) {
+
   int socket_desc, client_sock, client_size;
   struct sockaddr_in server_addr, client_addr;
   char server_message[2000], client_message[2000];
@@ -121,19 +122,12 @@ int main(void) {
       printf("Can't accept\n");
       return -1;
     }
+
     printf("Client connected at IP: %s and port: %i\n",
            inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
-    // Assign the client_sock to a thread to handle:
-    pthread_create(pool->threads[thread_index], NULL, handle_client,
-                   (void *)&client_sock);
-    pthread_detach(pool->threads[thread_index]);
-
-    // Increment the thread index for the next client:
-    thread_index = (thread_index + 1) % pool->thread_count;
-
-    // Closing the socket:
-    // close(client_sock);
+    // Add the task to the thread pool:
+    thread_pool_add_task(pool, handle_client, &client_sock);
   }
 
   // Closing the socket:
