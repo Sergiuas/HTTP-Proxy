@@ -77,12 +77,12 @@ void *handle_client(void *socket_desc) {
   message = "Greetings! I am your connection handler\n";
   write(client_sock, message, strlen(message));
 
-  message = "Now type something and i shall repeat what you type \n";
+  message = "Now type something, and I shall repeat what you type \n";
   write(client_sock, message, strlen(message));
 
   // Receive message from client socket:
   while ((read_size = recv(client_sock, client_message, 2000, 0)) > 0) {
-    // Send the message back to client:
+    // Send the message back to the client:
     write(client_sock, client_message, strlen(client_message));
 
     memset(client_message, '\0', sizeof(client_message));
@@ -95,10 +95,10 @@ void *handle_client(void *socket_desc) {
     printf("Error while receiving client message\n");
   }
 
-  // Free the socket pointer:
-  free(socket_desc);
+  // Close the socket:
+  close(client_sock);
 
-  return 0;
+  return NULL;
 }
 
 int main(void) {
@@ -123,6 +123,7 @@ int main(void) {
 
   // While the server is running, accept connections from clients and assign to
   // threads to handle:
+  int thread_index = 0;
   while (1) {
     // Accept connection from client:
     client_sock =
@@ -136,11 +137,15 @@ int main(void) {
            inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
     // Assign the client_sock to a thread to handle:
-    pthread_create(&pool.threads[0], NULL, handle_client, (void *)client_sock);
-    pthread_join(pool.threads[0], NULL);
+    pthread_create(&pool.threads[thread_index], NULL, handle_client,
+                   (void *)&client_sock);
+    pthread_detach(pool.threads[thread_index]);
+
+    // Increment the thread index for the next client:
+    thread_index = (thread_index + 1) % pool.num_threads;
 
     // Closing the socket:
-    close(client_sock);
+    // close(client_sock);
   }
 
   // Closing the socket:
