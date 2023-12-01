@@ -126,8 +126,11 @@ int main(void) {
     printf("Client connected at IP: %s and port: %i\n",
            inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
+    int *arg = malloc(sizeof(int));
+    *arg = client_sock;
+
     // Add the task to the thread pool:
-    thread_pool_add_task(pool, handle_client, &client_sock);
+    thread_pool_add_task(pool, handle_client, arg);
   }
 
   // Closing the socket:

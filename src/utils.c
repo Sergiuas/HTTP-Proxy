@@ -1,6 +1,7 @@
 #include "utils.h"
 
 ThreadPool *thread_pool_init(int thread_count) {
+
   ThreadPool *pool = malloc(sizeof(ThreadPool));
   if (pool == NULL) {
     return NULL;
@@ -92,6 +93,7 @@ void *thread_function(void *arg) {
 }
 
 void thread_pool_add_task(ThreadPool *pool, void (*task)(void *), void *arg) {
+
   pthread_mutex_lock(&(pool->mutex));
 
   // Check if the pool is already shutdown
