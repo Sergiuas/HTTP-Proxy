@@ -75,17 +75,18 @@ void *thread_function(void *arg) {
     task.function = pool->tasks[pool->task_queue_front].function;
     task.argument = pool->tasks[pool->task_queue_front].argument;
 
+    printf("%d numar\n", pool->task_queue_front);
+
     // Update the queue information
     pool->task_count--;
-    pool->task_queue_front =
-        (pool->task_queue_front + 1) % pool->task_queue_size;
+    pool->task_queue_front = pool->task_queue_front + 1;
 
     // Signal waiting threads that a task has been completed
     pthread_cond_signal(&(pool->done));
 
     pthread_mutex_unlock(&(pool->mutex));
 
-    // Execute the task
+    // Execute the task from the thread pool
     (*(task.function))(task.argument);
   }
 
@@ -109,12 +110,13 @@ void thread_pool_add_task(ThreadPool *pool, void (*task)(void *), void *arg) {
   }
 
   // Add the task to the task queue
-  int next_index = (pool->task_queue_rear + 1) % pool->task_queue_size;
+  int next_index = pool->task_queue_rear;
   pool->tasks[next_index].function = task;
   pool->tasks[next_index].argument = arg;
   pool->task_count++;
-  pool->task_queue_rear = next_index;
+  pool->task_queue_rear = next_index + 1;
 
+  printf("%d numar index\n", next_index);
   // Signal a waiting thread that a new task is available
   pthread_cond_signal(&(pool->cond));
 
