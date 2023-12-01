@@ -1,22 +1,4 @@
-#include <arpa/inet.h>
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <unistd.h>
-
-// Create a thread pool structure:
-typedef struct thread_pool {
-  int num_threads;
-  pthread_t *threads;
-} thread_pool_t;
-
-// Create a function to initialize the thread pool:
-void init_thread_pool(thread_pool_t *pool, int num_threads) {
-  pool->num_threads = num_threads;
-  pool->threads = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
-}
+#include "utils.h"
 
 // Create listening socket:
 int create_listening_socket(void) {
@@ -77,12 +59,12 @@ void *handle_client(void *socket_desc) {
   message = "Greetings! I am your connection handler\n";
   write(client_sock, message, strlen(message));
 
-  message = "Now type something and i shall repeat what you type \n";
+  message = "Now type something, and I shall repeat what you type \n";
   write(client_sock, message, strlen(message));
 
   // Receive message from client socket:
   while ((read_size = recv(client_sock, client_message, 2000, 0)) > 0) {
-    // Send the message back to client:
+    // Send the message back to the client:
     write(client_sock, client_message, strlen(client_message));
 
     memset(client_message, '\0', sizeof(client_message));
@@ -95,10 +77,10 @@ void *handle_client(void *socket_desc) {
     printf("Error while receiving client message\n");
   }
 
-  // Free the socket pointer:
-  free(socket_desc);
+  // Close the socket:
+  close(client_sock);
 
-  return 0;
+  return NULL;
 }
 
 int main(void) {
@@ -118,11 +100,18 @@ int main(void) {
   client_size = sizeof(client_addr);
 
   // Initialize thread pool:
-  thread_pool_t pool;
-  init_thread_pool(&pool, 5);
+  ThreadPool *pool;
+  pool = thread_pool_init(5);
+
+  // Verify if the thread pool was created successfully:
+  if (pool == NULL) {
+    printf("Error while initializing thread pool\n");
+    return -1;
+  }
 
   // While the server is running, accept connections from clients and assign to
   // threads to handle:
+  int thread_index = 0;
   while (1) {
     // Accept connection from client:
     client_sock =
@@ -136,11 +125,15 @@ int main(void) {
            inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
     // Assign the client_sock to a thread to handle:
-    pthread_create(&pool.threads[0], NULL, handle_client, (void *)client_sock);
-    pthread_join(pool.threads[0], NULL);
+    pthread_create(pool->threads[thread_index], NULL, handle_client,
+                   (void *)&client_sock);
+    pthread_detach(pool->threads[thread_index]);
+
+    // Increment the thread index for the next client:
+    thread_index = (thread_index + 1) % pool->thread_count;
 
     // Closing the socket:
-    close(client_sock);
+    // close(client_sock);
   }
 
   // Closing the socket:
