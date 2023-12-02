@@ -3,6 +3,7 @@
 #define UTILS_H
 
 #include <arpa/inet.h>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <stdbool.h>
@@ -47,9 +48,6 @@ void thread_pool_add_task(ThreadPool *pool, void (*task)(void *), void *arg);
 
 // Function to shutdown the thread pool
 void thread_pool_shutdown(ThreadPool *pool);
-
-// Function to create a server socket
-int create_server_socket(int port);
 
 // Function to accept client connections
 int accept_client_connection(int server_socket);

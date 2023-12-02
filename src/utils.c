@@ -154,27 +154,6 @@ void thread_pool_shutdown(ThreadPool *pool) {
   free(pool);
 }
 
-// Function to create a server socket
-int create_server_socket(int port) {
-  int socket_desc;
-  struct sockaddr_in server_addr;
-
-  // Create socket, we use SOCK_STREAM for TCP
-  socket_desc = socket(AF_INET, SOCK_STREAM, 0);
-
-  if (socket_desc < 0) {
-    printf("Unable to create socket\n");
-    return -1;
-  }
-
-  printf("Socket created successfully\n");
-
-  // Set port and IP the same as client-side:
-  server_addr.sin_family = AF_INET;
-  server_addr.sin_port = htons(port);
-  server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-}
-
 // Function to receive data from a socket
 int receive_data(int socket, void *buffer, int buffer_size) {
   int data_size;

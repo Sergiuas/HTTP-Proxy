@@ -48,28 +48,107 @@ int create_listening_socket(void) {
   return socket_desc;
 }
 
+// Create a function to parse a http request:
+void parse_request(char *buffer, char *hostname, char *path) {
+  char *token = strtok(buffer, " \r\n");
+  while (token != NULL) {
+    if (strcmp(token, "GET") == 0) { // TODO: Add support for other methods
+      token = strtok(NULL, " \r\n");
+      if (token != NULL) {
+        strcpy(path, token);
+      }
+    } else if (strcmp(token, "Host:") == 0) {
+      token = strtok(NULL, " \r\n");
+      if (token != NULL) {
+        strcpy(hostname, token);
+      }
+    }
+    token = strtok(NULL, " \r\n");
+  }
+}
+
 // Create a function to handle the client requests:
 void *handle_client(void *socket_desc) {
   // Get the socket descriptor:
   int client_sock = *(int *)socket_desc;
   int read_size;
-  char *message, client_message[2000];
+  char client_message[2000];
 
   printf("Thread #%ld\n", pthread_self()); // Print the thread id;
 
-  // Send message to the client socket:
-  message = "Greetings! I am your connection handler\n";
-  write(client_sock, message, strlen(message));
+  read_size = recv(client_sock, client_message, 2000, 0);
 
-  message = "Now type something, and I shall repeat what you type \n";
-  write(client_sock, message, strlen(message));
+  if (read_size == 0) {
+    printf("Client disconnected\n");
+    fflush(stdout);
+  } else if (read_size == -1) {
+    printf("Error while receiving client message\n");
+  }
 
-  // Receive message from client socket:
-  while ((read_size = recv(client_sock, client_message, 2000, 0)) > 0) {
-    // Send the message back to the client:
-    write(client_sock, client_message, strlen(client_message));
+  // Print the received message with write to stdout:
+  write(STDOUT_FILENO, client_message, strlen(client_message));
 
-    memset(client_message, '\0', sizeof(client_message));
+  // Process the request
+  char hostname[100];
+  char path[200];
+  parse_request(client_message, hostname, path);
+
+  printf("\nHostname: %s\n", hostname);
+  printf("Path: %s\n", path);
+
+  // Take the port number from the hostname, if any, else use port 80:
+  char to_find[100];
+  strcpy(to_find, hostname);
+  char *port = strstr(to_find, ":");
+  if (port != NULL) {
+    *port = '\0';
+    port++;
+  } else {
+    port = "80";
+  }
+
+  printf("Port: %s\n", port);
+
+  // Get the IP address of the hostname:
+  struct hostent *host = gethostbyname(hostname);
+  if (host == NULL) {
+    printf("Error while getting IP address\n");
+    return NULL;
+  }
+
+  printf("IP address: %s\n", inet_ntoa(*((struct in_addr *)host->h_addr)));
+
+  // Create a socket to connect to the server:
+  int server_sock = socket(AF_INET, SOCK_STREAM, 0);
+  if (server_sock < 0) {
+    printf("Error while creating socket\n");
+    return NULL;
+  }
+
+  // Connect to the server:
+  struct sockaddr_in server_addr;
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_port = htons(atoi(port));
+  server_addr.sin_addr = *((struct in_addr *)host->h_addr);
+  if (connect(server_sock, (struct sockaddr *)&server_addr,
+              sizeof(server_addr)) < 0) {
+    printf("Error while connecting to server\n");
+    return NULL;
+  }
+
+  // Send the request to the server:
+  if (send(server_sock, client_message, strlen(client_message), 0) < 0) {
+    printf("Error while sending request to server\n");
+    return NULL;
+  }
+
+  // Receive the response from the server:
+  char server_response[2000];
+  memset(server_response, '\0', sizeof(server_response));
+  while ((read_size = recv(server_sock, server_response, 2000, 0)) > 0) {
+    // Forward the response from the redirect address back to the client:
+    write(client_sock, server_response, strlen(server_response));
+    memset(server_response, '\0', sizeof(server_response));
   }
 
   if (read_size == 0) {
