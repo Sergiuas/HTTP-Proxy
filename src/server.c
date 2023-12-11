@@ -92,23 +92,27 @@ void *handle_client(void *socket_desc) {
   char hostname[100];
   char path[200];
   char to_find[2000];
+  char first_line[200];
 
-  strcpy(to_find, client_message);
+  strcpy(first_line, client_message);
+  //  strcpy(to_find, client_message);
   parse_request(client_message, hostname, path);
 
   printf("\nHostname: %s\n", hostname);
   printf("Path: %s\n", path);
 
-  // Take the first line from the request:
-  char *first_line = strtok(to_find, "\r\n");
-  if (first_line == NULL) {
-    printf("Error while parsing request\n");
-    return NULL;
-  }
+  // Find the end of the first line
+  char *end_of_first_line = strchr(first_line, '\r');
+  if (end_of_first_line != NULL) {
+    // Null-terminate the first line
+    *end_of_first_line = '\0';
 
-  printf("First line: %s\n", first_line);
-  // Add two /r/n to the end of the first line:
-  strcat(first_line, "\r\n\r\n");
+    // Add two CRLF sequences to the end of the first line
+    strcat(first_line, "\r\n\r\n");
+
+    printf("Modified Request: %s\n", first_line);
+  } else
+    printf("Error while modifying request\n");
 
   // Take the port number from the hostname, if any, else use port 80:
   strcpy(to_find, hostname);
