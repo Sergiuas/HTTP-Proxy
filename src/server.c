@@ -91,13 +91,30 @@ void *handle_client(void *socket_desc) {
   // Process the request
   char hostname[100];
   char path[200];
+  char to_find[2000];
+  char first_line[200];
+
+  strcpy(first_line, client_message);
+  //  strcpy(to_find, client_message);
   parse_request(client_message, hostname, path);
 
   printf("\nHostname: %s\n", hostname);
   printf("Path: %s\n", path);
 
+  // Find the end of the first line
+  char *end_of_first_line = strchr(first_line, '\r');
+  if (end_of_first_line != NULL) {
+    // Null-terminate the first line
+    *end_of_first_line = '\0';
+
+    // Add two CRLF sequences to the end of the first line
+    strcat(first_line, "\r\n\r\n");
+
+    printf("Modified Request: %s\n", first_line);
+  } else
+    printf("Error while modifying request\n");
+
   // Take the port number from the hostname, if any, else use port 80:
-  char to_find[100];
   strcpy(to_find, hostname);
   char *port = strstr(to_find, ":");
   if (port != NULL) {
@@ -110,34 +127,63 @@ void *handle_client(void *socket_desc) {
   printf("Port: %s\n", port);
 
   // Get the IP address of the hostname:
-  struct hostent *host = gethostbyname(hostname);
-  if (host == NULL) {
-    printf("Error while getting IP address\n");
+  // struct hostent *host = gethostbyname(hostname);
+  // if (host == NULL) {
+  //   printf("Error while getting IP address\n");
+  //   return NULL;
+  // }
+
+  // printf("IP address: %s\n", inet_ntoa(*((struct in_addr *)host->h_addr)));
+
+  // // Create a socket to connect to the server:
+  // int server_sock = socket(AF_INET, SOCK_STREAM, 0);
+  // if (server_sock < 0) {
+  //   printf("Error while creating socket\n");
+  //   return NULL;
+  // }
+
+  // // Connect to the server:
+  // struct sockaddr_in server_addr;
+  // server_addr.sin_family = AF_INET;
+  // server_addr.sin_port = htons(atoi(port));
+  // server_addr.sin_addr = *((struct in_addr *)host->h_addr);
+  // if (connect(server_sock, (struct sockaddr *)&server_addr,
+  //             sizeof(server_addr)) < 0) {
+  //   printf("Error while connecting to server\n");
+  //   return NULL;
+  // }
+
+  struct addrinfo hints, *res;
+  int rv, server_sock;
+
+  memset(&hints, 0, sizeof hints);
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+
+  if ((rv = getaddrinfo(hostname, port, &hints, &res)) != 0) {
+    printf("Error while getting address info\n");
     return NULL;
   }
 
-  printf("IP address: %s\n", inet_ntoa(*((struct in_addr *)host->h_addr)));
+  printf("IP address: %s\n",
+         inet_ntoa(((struct sockaddr_in *)res->ai_addr)->sin_addr));
 
-  // Create a socket to connect to the server:
-  int server_sock = socket(AF_INET, SOCK_STREAM, 0);
+  server_sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+
   if (server_sock < 0) {
     printf("Error while creating socket\n");
     return NULL;
   }
 
-  // Connect to the server:
-  struct sockaddr_in server_addr;
-  server_addr.sin_family = AF_INET;
-  server_addr.sin_port = htons(atoi(port));
-  server_addr.sin_addr = *((struct in_addr *)host->h_addr);
-  if (connect(server_sock, (struct sockaddr *)&server_addr,
-              sizeof(server_addr)) < 0) {
+  if (connect(server_sock, res->ai_addr, res->ai_addrlen) < 0) {
     printf("Error while connecting to server\n");
     return NULL;
   }
 
   // Send the request to the server:
-  if (send(server_sock, client_message, strlen(client_message), 0) < 0) {
+  if (send(server_sock, "GET / HTTP/1.0\r\n\r\n", 23, 0) < 0) { // TODO: Add
+                                                                // support for
+                                                                // other methods
     printf("Error while sending request to server\n");
     return NULL;
   }
@@ -147,6 +193,7 @@ void *handle_client(void *socket_desc) {
   memset(server_response, '\0', sizeof(server_response));
   while ((read_size = recv(server_sock, server_response, 2000, 0)) > 0) {
     // Forward the response from the redirect address back to the client:
+    printf("Response from server: %s\n", server_response);
     write(client_sock, server_response, strlen(server_response));
     memset(server_response, '\0', sizeof(server_response));
   }
@@ -157,6 +204,10 @@ void *handle_client(void *socket_desc) {
   } else if (read_size == -1) {
     printf("Error while receiving client message\n");
   }
+
+  // Close the server socket:
+  close(server_sock);
+  freeaddrinfo(res);
 
   // Close the socket:
   close(client_sock);
