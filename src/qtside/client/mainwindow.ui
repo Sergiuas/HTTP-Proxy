@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuHome">
+    <property name="title">
+     <string>Dashboard</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuConnect">
+    <property name="title">
+     <string>Target</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuProxy">
+    <property name="title">
+     <string>Proxy</string>
+    </property>
+    <addaction name="actionHTTP_History"/>
+    <addaction name="actionHTTP_History_2"/>
+   </widget>
+   <widget class="QMenu" name="menuDecoder">
+    <property name="title">
+     <string>Decoder</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuProxyDock">
+    <property name="title">
+     <string>ProxyDock</string>
+    </property>
+    <addaction name="actionSettings"/>
+   </widget>
+   <addaction name="menuProxyDock"/>
+   <addaction name="menuHome"/>
+   <addaction name="menuConnect"/>
+   <addaction name="menuProxy"/>
+   <addaction name="menuDecoder"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionHTTP_History">
+   <property name="text">
+    <string>Intercept</string>
+   </property>
+  </action>
+  <action name="actionHTTP_History_2">
+   <property name="text">
+    <string>HTTP History</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
