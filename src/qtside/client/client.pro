@@ -1,4 +1,5 @@
-QT       += core gui
+QT += core gui widgets uitools
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,6 +17,8 @@ HEADERS += \
     mainwindow.h
 
 FORMS += \
+    about.ui \
+    intercept.ui \
     mainwindow.ui
 
 # Default rules for deployment.
@@ -24,4 +27,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
+    res.qrc \
     res.qrc

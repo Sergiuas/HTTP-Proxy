@@ -1,1 +1,11 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/images">
+        <file>proxydock.png</file>
+        <file>bg2.jpg</file>
+        <file>bg1.png</file>
+    </qresource>
+    <qresource prefix="/files">
+        <file>about.ui</file>
+    </qresource>
+    <qresource prefix="/new/prefix1"/>
+</RCC>
