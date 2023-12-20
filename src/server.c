@@ -126,33 +126,6 @@ void *handle_client(void *socket_desc) {
 
   printf("Port: %s\n", port);
 
-  // Get the IP address of the hostname:
-  // struct hostent *host = gethostbyname(hostname);
-  // if (host == NULL) {
-  //   printf("Error while getting IP address\n");
-  //   return NULL;
-  // }
-
-  // printf("IP address: %s\n", inet_ntoa(*((struct in_addr *)host->h_addr)));
-
-  // // Create a socket to connect to the server:
-  // int server_sock = socket(AF_INET, SOCK_STREAM, 0);
-  // if (server_sock < 0) {
-  //   printf("Error while creating socket\n");
-  //   return NULL;
-  // }
-
-  // // Connect to the server:
-  // struct sockaddr_in server_addr;
-  // server_addr.sin_family = AF_INET;
-  // server_addr.sin_port = htons(atoi(port));
-  // server_addr.sin_addr = *((struct in_addr *)host->h_addr);
-  // if (connect(server_sock, (struct sockaddr *)&server_addr,
-  //             sizeof(server_addr)) < 0) {
-  //   printf("Error while connecting to server\n");
-  //   return NULL;
-  // }
-
   struct addrinfo hints, *res;
   int rv, server_sock;
 
@@ -219,11 +192,6 @@ int main(void) {
 
   int socket_desc, client_sock, client_size;
   struct sockaddr_in server_addr, client_addr;
-  char server_message[2000], client_message[2000];
-
-  // Clean buffers:
-  memset(server_message, '\0', sizeof(server_message));
-  memset(client_message, '\0', sizeof(client_message));
 
   socket_desc = create_listening_socket();
   if (socket_desc < 0) {
