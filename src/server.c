@@ -1,4 +1,6 @@
 #include "utils.h"
+#include <sys/epoll.h>
+#define MAX_EVENTS 50
 
 // Create listening socket:
 int create_listening_socket(void) {
@@ -49,10 +51,11 @@ int create_listening_socket(void) {
 }
 
 // Create a function to parse a http request:
-void parse_request(char *buffer, char *hostname, char *path) {
+void parse_request(char *buffer, char*method, char *hostname, char *path) {
   char *token = strtok(buffer, " \r\n");
   while (token != NULL) {
-    if (strcmp(token, "GET") == 0) { // TODO: Add support for other methods
+    if (strcmp(token, "GET") == 0 || strcmp(token, "POST") == 0) { // TODO: Add support for other methods
+      strcpy(method, token);
       token = strtok(NULL, " \r\n");
       if (token != NULL) {
         strcpy(path, token);
@@ -67,39 +70,48 @@ void parse_request(char *buffer, char *hostname, char *path) {
   }
 }
 
-// Create a function to handle the client requests:
-void *handle_client(void *socket_desc) {
-  // Get the socket descriptor:
-  int client_sock = *(int *)socket_desc;
-  int read_size;
-  char client_message[2000];
-
+void handle_request(ClientRequest* arg){
   printf("Thread #%ld\n", pthread_self()); // Print the thread id;
 
-  read_size = recv(client_sock, client_message, 2000, 0);
+  //ClientRequest* arg = (ClientRequest*)req;
+  int client_sock = arg->socketfd;
+  char* client_message = arg->request;
+  char* filepath = malloc(200);
+  char* dirpath = malloc(200);
+  snprintf(dirpath, 10, "%d", client_sock);
+  strcat(dirpath, "/");
 
-  if (read_size == 0) {
-    printf("Client disconnected\n");
-    fflush(stdout);
-  } else if (read_size == -1) {
-    printf("Error while receiving client message\n");
-  }
+    if (mkdir(dirpath, 0777) == -1) {
+        printf("Unable to create %s directory\n", dirpath);
+        return;
+    }
 
-  // Print the received message with write to stdout:
+    DIR* rootDir = opendir(dirpath);
+    if (rootDir == NULL) {
+        printf("Unable to open %s directory\n", dirpath);
+        return;
+    }
+
   write(STDOUT_FILENO, client_message, strlen(client_message));
 
-  // Process the request
+  int read_size = strlen(client_message);
   char hostname[100];
+  char method[10];
   char path[200];
   char to_find[2000];
   char first_line[200];
 
   strcpy(first_line, client_message);
   //  strcpy(to_find, client_message);
-  parse_request(client_message, hostname, path);
+  parse_request(client_message, method, hostname, path);
 
-  printf("\nHostname: %s\n", hostname);
+  printf("\n\nnMethod: %s\n", method);
+  printf("Hostname: %s\n", hostname);
   printf("Path: %s\n", path);
+
+  strcpy(filepath, method);
+  strcat(filepath, hostname);
+  strcat(filepath, path);
 
   // Find the end of the first line
   char *end_of_first_line = strchr(first_line, '\r');
@@ -188,17 +200,35 @@ void *handle_client(void *socket_desc) {
   return NULL;
 }
 
+void handle_disconnect(void* socket_desc){
+printf("Thread #%ld\n", pthread_self()); // Print the thread id;
+}
+
 int main(void) {
 
-  int socket_desc, client_sock, client_size;
+  int listen_sock, conn_sock, client_size;
   struct sockaddr_in server_addr, client_addr;
 
-  socket_desc = create_listening_socket();
-  if (socket_desc < 0) {
+  struct epoll_event ev, events[MAX_EVENTS];
+  int epollfd, nfds;
+
+  listen_sock = create_listening_socket();
+  if (listen_sock < 0) {
     return -1;
   }
 
-  client_size = sizeof(client_addr);
+      epollfd = epoll_create1(0);
+      if (epollfd == -1) {
+          perror("epoll_create1");
+          exit(EXIT_FAILURE);
+      }
+
+      ev.events = EPOLLIN;
+      ev.data.fd = listen_sock;
+      if (epoll_ctl(epollfd, EPOLL_CTL_ADD, listen_sock, &ev) == -1) {
+          perror("epoll_ctl: listen_sock");
+          exit(EXIT_FAILURE);
+      }
 
   // Initialize thread pool:
   ThreadPool *pool;
@@ -210,31 +240,85 @@ int main(void) {
     return -1;
   }
 
-  // While the server is running, accept connections from clients and assign to
-  // threads to handle:
-  int thread_index = 0;
-  while (1) {
-    // Accept connection from client:
-    client_sock =
-        accept(socket_desc, (struct sockaddr *)&client_addr, &client_size);
+  // // While the server is running, accept connections from clients and assign to
+  // // threads to handle:
+  // int thread_index = 0;
+  // while (1) {
+  //   // Accept connection from client:
+  //   client_sock =
+  //       accept(socket_desc, (struct sockaddr *)&client_addr, &client_size);
 
-    if (client_sock < 0) {
-      printf("Can't accept\n");
-      return -1;
-    }
+  //   if (client_sock < 0) {
+  //     printf("Can't accept\n");
+  //     return -1;
+  //   }
 
-    printf("Client connected at IP: %s and port: %i\n",
-           inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+  //   printf("Client connected at IP: %s and port: %i\n",
+  //          inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
-    int *arg = malloc(sizeof(int));
-    *arg = client_sock;
+  //   int *arg = malloc(sizeof(int));
+  //   *arg = client_sock;
 
-    // Add the task to the thread pool:
-    thread_pool_add_task(pool, handle_client, arg);
-  }
+  //   // Add the task to the thread pool:
+  //   thread_pool_add_task(pool, handle_client, arg);
+  // }
 
+
+
+
+
+
+
+      for (;;) {
+          nfds = epoll_wait(epollfd, events, MAX_EVENTS, -1);
+          if (nfds == -1) {
+              perror("epoll_wait");
+              exit(EXIT_FAILURE);
+          }
+
+          for (int n = 0; n < nfds; ++n) {
+              if (events[n].data.fd == listen_sock) {
+                  conn_sock = accept(listen_sock,
+                                     (struct sockaddr *) &client_addr,
+                                     &client_size);
+                  if (conn_sock == -1) {
+                      perror("accept");
+                      exit(EXIT_FAILURE);
+                  }
+                  setnonblocking(conn_sock);
+                  ev.events = EPOLLIN | EPOLLET;
+                  ev.data.fd = conn_sock;
+                  if (epoll_ctl(epollfd, EPOLL_CTL_ADD, conn_sock,
+                                &ev) == -1) {
+                      perror("epoll_ctl: conn_sock");
+                      exit(EXIT_FAILURE);
+                  }
+                  printf("Adaugat client %d\n", conn_sock);
+              } else {
+                  
+                  char* buffer = malloc(2000);
+                  memset(buffer, '\0', sizeof(buffer));
+                  int read_size = recv(events[n].data.fd, buffer, 2000, 0);
+                  if (read_size == 0) {
+                      printf("Client disconnected\n");
+                      int* fdarg = malloc(sizeof(int));
+                      *fdarg = events[n].data.fd;
+                      thread_pool_add_task(pool, handle_disconnect, fdarg);
+                      fflush(stdout);
+                  } else if (read_size == -1) {
+                      printf("Error while receiving client message\n");
+                  } else {
+                  ClientRequest* arg = (ClientRequest*)malloc(sizeof(ClientRequest));
+                  arg->socketfd = events[n].data.fd;
+                  arg->request = buffer;
+                  thread_pool_add_task(pool, handle_request, arg); 
+                  }
+
+              }
+          }
+      }
   // Closing the socket:
-  close(socket_desc);
+  close(listen_sock);
 
   return 0;
 }
