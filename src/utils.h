@@ -30,6 +30,7 @@ void setnonblocking(int sockfd) {
 
 #define TASK_QUEUE_SIZE 100
 #define THREAD_MAX_COUNT 100
+#define MAX_CACHE_SIZE 3
 
 // Task structure for a thread:
 typedef struct Task {
@@ -56,6 +57,7 @@ typedef struct ThreadPool {
 typedef struct ClientRequest{
     int socketfd;
     char* request;
+    //char cachefiles[10][100];
 } ClientRequest;
 
  

@@ -14,21 +14,21 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    centralWidget = new QStackedWidget(this);
+    // centralWidget = new QStackedWidget(this);
 
-    QFile file(":/files/about.ui");  // Adjust the file path accordingly
-    file.open(QFile::ReadOnly);
-    QWidget *about_widget = loadUi(&file, this);
-    file.close();
-    centralWidget->addWidget(about_widget);
+    // QFile file(":/files/about.ui");  // Adjust the file path accordingly
+    // file.open(QFile::ReadOnly);
+    // QWidget *about_widget = loadUi(&file, this);
+    // file.close();
+    // centralWidget->addWidget(about_widget);
 
-    QFile file(":/files/intercept.ui");  // Adjust the file path accordingly
-    file.open(QFile::ReadOnly);
-    QWidget *intercept_widget = loadUi(&file, this);
-    file.close();
-    centralWidget->addWidget(intercept_widget);
+    // file(":/files/intercept.ui");  // Adjust the file path accordingly
+    // file.open(QFile::ReadOnly);
+    // QWidget *intercept_widget = loadUi(&file, this);
+    // file.close();
+    // centralWidget->addWidget(intercept_widget);
 
-     setCentralWidget(centralWidget);
+    //  setCentralWidget(centralWidget);
 
 }
 
@@ -48,6 +48,6 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_actionIntercept_triggered()
 {
-    centralWidget->setCurrentWidget(1);
+    //centralWidget->setCurrentWidget(1);
 }
 

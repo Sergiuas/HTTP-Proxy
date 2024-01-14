@@ -1,4 +1,4 @@
-QT += core gui widgets uitools
+QT += core gui widgets uitools network
 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -10,10 +10,12 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    intercepter.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    intercepter.h \
     mainwindow.h
 
 FORMS += \
