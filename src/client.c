@@ -8,7 +8,7 @@
 int main(void) {
   int socket_desc;
   struct sockaddr_in server_addr;
-  char server_message[2000], client_message[2000];
+  char server_message[4000], client_message[4000];
 
   // Clean buffers:
   memset(server_message, '\0', sizeof(server_message));
@@ -64,13 +64,22 @@ int main(void) {
       return -1;
     }
 
-    // Receive the server's response:
-    if (recv(socket_desc, server_message, sizeof(server_message), 0) < 0) {
-      printf("Error while receiving server's msg\n");
-      return -1;
+    int file_size,len;
+    int remain_data=0;
+
+    read(socket_desc, &file_size, sizeof(file_size));
+    //file_size = atoi(server_message);
+    printf("File size: %d\n", file_size);
+
+    remain_data = file_size;
+    while((remain_data > 0) && ((len = read(socket_desc, server_message, sizeof(server_message))) > 0)){
+      printf("Received %ld bytes, expected %d bytes\n", len, remain_data);
+      remain_data -= len;
+      printf("Remaining data: %d\n", remain_data);
     }
 
-    printf("Server's response: %s\n", server_message);
+    printf("Server response: %s\n", server_message);
+
   }
 
   // Close the socket:
