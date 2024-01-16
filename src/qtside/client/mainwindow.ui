@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>ProxyDock</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="res.qrc">
+    <normaloff>:/images/proxydock.png</normaloff>:/images/proxydock.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#centralwidget {
+	
+	border-image: url(:/images/bg2.jpg);	
+
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <widget class="QMenu" name="menuproxydock">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionSettings"/>
+    <addaction name="actionHelp"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuProxy">
+    <property name="title">
+     <string>Dashboard</string>
+    </property>
+    <addaction name="actionDashboard"/>
+    <addaction name="actionHTTP_History"/>
+   </widget>
+   <widget class="QMenu" name="menuProxy_2">
+    <property name="title">
+     <string>Proxy</string>
+    </property>
+    <addaction name="actionTarget"/>
+    <addaction name="actionIntercept"/>
+   </widget>
+   <widget class="QMenu" name="menuDecoder">
+    <property name="title">
+     <string>Decoder</string>
+    </property>
+    <addaction name="actionDecoder"/>
+   </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_as"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuproxydock"/>
+   <addaction name="menuProxy"/>
+   <addaction name="menuProxy_2"/>
+   <addaction name="menuDecoder"/>
+  </widget>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionDashboard">
+   <property name="text">
+    <string>Dashboard</string>
+   </property>
+  </action>
+  <action name="actionHTTP_History">
+   <property name="text">
+    <string>HTTP History</string>
+   </property>
+  </action>
+  <action name="actionIntercept">
+   <property name="text">
+    <string>Intercept</string>
+   </property>
+  </action>
+  <action name="actionTarget">
+   <property name="text">
+    <string>Target</string>
+   </property>
+  </action>
+  <action name="actionDecoder">
+   <property name="text">
+    <string>Decode</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="text">
+    <string>Save as</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
+ <connections/>
+</ui>
