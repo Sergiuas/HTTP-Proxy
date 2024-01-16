@@ -23,7 +23,7 @@ protected:
 private:
     Intercepter(QObject *parent = nullptr): QTcpServer(parent){
         this->serverSocket = new QTcpSocket(this);
-        serverSocket->connectToHost("127.0.0.1", 8080);
+        serverSocket->connectToHost("10.10.24.28", 8080);
         if (!serverSocket->waitForConnected()) {
             qWarning() << "Failed to connect to the server";
         }

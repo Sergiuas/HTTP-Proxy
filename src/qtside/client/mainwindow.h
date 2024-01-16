@@ -31,17 +31,17 @@ public:
 private slots:
     void file_open() {
         // Show the first widget in the stacked widget
-        centralWidget->setCurrentIndex(0);
+        //centralWidget->setCurrentIndex(0);
     }
 
     void file_save() {
         // Show the second widget in the stacked widget
-        centralWidget->setCurrentIndex(1);
+        //centralWidget->setCurrentIndex(1);
     }
 
     void file_save_as() {
         // Show the third widget in the stacked widget
-        centralWidget->setCurrentIndex(2);
+        //centralWidget->setCurrentIndex(2);
     }
 
     void on_actionAbout_triggered();
@@ -51,7 +51,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    QStackedWidget *centralWidget;
 
 };
 #endif // MAINWINDOW_H
