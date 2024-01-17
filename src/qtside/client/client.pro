@@ -22,7 +22,6 @@ HEADERS += \
 
 FORMS += \
     about.ui \
-    intercept.ui \
     mainwindow.ui
 
 # Default rules for deployment.
