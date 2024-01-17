@@ -22,6 +22,10 @@ private slots:
 
     void on_forwardBtn_clicked();
 
+    void on_requestText_textChanged();
+
+    void on_responseText_textChanged();
+
 private:
     Ui::MainWindow *ui;
     static MainWindow* instance;

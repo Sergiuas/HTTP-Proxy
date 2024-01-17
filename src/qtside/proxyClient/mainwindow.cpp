@@ -27,11 +27,13 @@ void MainWindow::setRequestText(QString request)
 {
     ui->requestText->clear();
     ui->requestText->setPlainText(request);
+    ui->httpTabMenu->setCurrentIndex(0);
 }
 void MainWindow::setResponseText(QString response)
 {
     ui->responseText->clear();
     ui->responseText->setPlainText(response);
+    if(response!="") ui->httpTabMenu->setCurrentIndex(1);
 }
 
 void MainWindow::on_interceptBtn_clicked()
@@ -50,5 +52,19 @@ void MainWindow::on_interceptBtn_clicked()
 void MainWindow::on_forwardBtn_clicked()
 {
     Intercepter::GetInstance()->setNextAction(true);
+}
+
+
+void MainWindow::on_requestText_textChanged()
+{
+    Logger::GetInstance()->setLastRequest(ui->requestText->toPlainText());
+    Intercepter::GetInstance()->setRequest(ui->requestText->toPlainText());
+}
+
+
+void MainWindow::on_responseText_textChanged()
+{
+    Logger::GetInstance()->setLastResponse(ui->responseText->toPlainText());
+    Intercepter::GetInstance()->setResponse(ui->responseText->toPlainText());
 }
 

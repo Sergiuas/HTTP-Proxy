@@ -19,6 +19,8 @@ public:
     void toggleIntercept() { activeIntercept=!activeIntercept; }
     bool isIntercepting() { return activeIntercept; }
     void setNextAction(bool value) { nextAction=value; }
+    void setResponse(QString response){ this->response=response.toLatin1(); }
+    void setRequest(QString request) { this->request=request.toLatin1();}
 protected:
     void incomingConnection(qintptr socketDescriptor) override {
         QTcpSocket *clientSocket = new QTcpSocket(this);
@@ -50,6 +52,8 @@ private:
     static std::mutex mutex_;
     bool activeIntercept=false;
     bool nextAction=false;
+    QByteArray response="";
+    QByteArray request="";
 
     QTcpSocket* serverSocket;
 
@@ -59,16 +63,17 @@ private:
     }
 
     void handleClientRequest(QTcpSocket *clientSocket) {
-        QByteArray requestData = clientSocket->readAll();
-        qDebug()<<requestData;
-        QByteArray responseData;
-        if(responseData.contains("CONNECT"))
+        response.clear();
+        request.clear();
+        request = clientSocket->readAll();
+        qDebug()<<"Print request:"<<request;
+        if(request.contains("CONNECT"))
             clientSocket->disconnectFromHost();
 
         //set up logger;
         Logger * log=Logger::GetInstance();
         //adding request to log
-        log->addRequest(requestData);
+        log->addRequest(request);
 
         //intercept request if intercept is active
         nextAction=false;
@@ -79,17 +84,17 @@ private:
             }
             nextAction=false;
         }
-        serverSocket->write(requestData);
+        serverSocket->write(request);
 
         serverSocket->waitForBytesWritten();
 
         // Read the response from the other server
         serverSocket->waitForReadyRead();
-        responseData += serverSocket->readAll();
-        qDebug() << "Response from other server:" << responseData;
+        response += serverSocket->readAll();
+        qDebug() << "Response from other server:" << response;
 
         //add response to log
-        log->addResponse(responseData);
+        log->addResponse(response);
 
         //intercept response if intercept is active
         if(activeIntercept){
@@ -100,7 +105,7 @@ private:
             nextAction=false;
         }
         // Send response back to the browser
-        clientSocket->write(responseData);
+        clientSocket->write(response);
         clientSocket->waitForBytesWritten();
         clientSocket->disconnectFromHost();
     }

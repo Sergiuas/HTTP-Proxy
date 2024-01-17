@@ -12,6 +12,8 @@ public:
     static Logger* GetInstance();
     void addRequest(QString request);
     void addResponse(QString response);
+    void setLastRequest(QString request);
+    void setLastResponse(QString response);
 
 private:
     QVector <QString> requestsHistory;
