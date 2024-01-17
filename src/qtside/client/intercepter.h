@@ -28,8 +28,12 @@ private:
     Intercepter(Ui::MainWindow * ui,QObject *parent = nullptr): QTcpServer(parent){
         this->ui=ui;
         this->serverSocket = new QTcpSocket(this);
+<<<<<<< Updated upstream
         //serverSocket->connectToHost("10.10.24.28", 8081);
         serverSocket->connectToHost("192.168.56.56", 8080);
+=======
+        serverSocket->connectToHost("10.10.24.28", 8081);
+>>>>>>> Stashed changes
         if (!serverSocket->waitForConnected()) {
             qWarning() << "Failed to connect to the server";
         }
@@ -56,11 +60,13 @@ private:
          qDebug()<<requestData;
          QByteArray responseData;
 
+        // requestData = "GET / HTTP/1.1\r\nHost: www.google.com\r\n\r\n";
 
          serverSocket->write(requestData);
 
          serverSocket->waitForBytesWritten();
 
+<<<<<<< Updated upstream
          // // Read the response from the other server
          serverSocket->waitForReadyRead();
          responseData = serverSocket->readAll();
@@ -74,6 +80,13 @@ private:
          // qWarning() << "Server socket is not connected";
          //responseData = "HTTP/1.1 500 Internal Server Error\r\n\r\nServer connection error";
          //verify if intercept is on
+=======
+             // // Read the response from the other server
+             responseData = serverSocket->readAll();
+            qDebug() << "Response from other server:" << responseData;
+            // qWarning() << "Server socket is not connected";
+            // responseData = "HTTP/1.1 500 Internal Server Error\r\n\r\nServer connection error";
+>>>>>>> Stashed changes
          // Send response back to the browser
          clientSocket->write(responseData);
          clientSocket->waitForBytesWritten();

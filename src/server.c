@@ -2,6 +2,9 @@
 #include <sys/epoll.h>
 #define MAX_EVENTS 50
 
+// Variable for blacklist head:
+blackList *blacklist_head;
+
 // Create listening socket:
 int create_listening_socket(uint16_t _port) {
   int socket_desc;
@@ -121,13 +124,7 @@ void handle_request(ClientRequest* arg){
   char* dirpath = malloc(200);
   snprintf(dirpath, 10, "%d", client_sock);
   strcat(dirpath, "/");
-    mkdir(dirpath, S_IRWXU);
-
-    // DIR* rootDir = opendir(dirpath);
-    // if (rootDir == NULL) {
-    //     printf("Unable to open %s directory\n", dirpath);
-    //     return;
-    // }
+  mkdir(dirpath, S_IRWXU);
 
   write(STDOUT_FILENO, client_message, strlen(client_message));
 
@@ -146,6 +143,10 @@ void handle_request(ClientRequest* arg){
   printf("\n\nMethod: %s\n", method);
   printf("Hostname: %s\n", hostname);
   printf("Path: %s\n", path);
+
+  if (verify_hostname(hostname, blacklist_head) == 1) {
+    return NULL;
+  }
 
   strcpy(filepath, method);
   strcat(filepath, hostname);
@@ -219,9 +220,9 @@ void handle_request(ClientRequest* arg){
       
       int fd = open(verify_path, O_CREAT | O_WRONLY, 0644);
       printf("Writing to file\n");
-      int total_length = 0;
-      int content_length = 0;
-      int offset_content = 0;
+      // int total_length = 0;
+      // int content_length = 0;
+      // int offset_content = 0;
       // Receive the response from the server:
 
       char server_response[4096];
@@ -233,56 +234,61 @@ void handle_request(ClientRequest* arg){
 
       // Set up timeout struct
       struct timeval timeout;
-      timeout.tv_sec = 2;
+      timeout.tv_sec = 1;
       timeout.tv_usec = 0;
+
      while (1) {
-    // Use select to wait for data or timeout
-      //     timeout.tv_sec = 3;
-      // timeout.tv_usec = 0;
-    int result = select(targetSocket + 1, &read_fds, NULL, NULL, &timeout);
+          int result = select(targetSocket + 1, &read_fds, NULL, NULL, &timeout);
 
-    if (result > 0) {
-        // Data is available to read
-        char server_response[4096];
-        ssize_t read_size = recv(targetSocket, server_response, sizeof(server_response) - 1, 0);
+          if (result > 0) {
+              // Data is available to read
+              char server_response[4096];
+              ssize_t read_size = recv(targetSocket, server_response, BUFFER_SIZE - 1, 0);
 
-        if (read_size > 0) {
-            server_response[read_size] = '\0';
+              if (read_size > 0) {
+                  server_response[read_size] = '\0';
 
-            // Process the data as needed
-            write(fd, server_response, strlen(server_response));
-            printf("Read size: %d\n", read_size);
-           
+                  // Process the data as needed
 
-            // if (total_length >= content_length + offset_content) {
-            //     break;
-            // }
-        } else if (read_size == 0) {
-            // Connection closed
-            printf("Connection closed by the server.\n");
-            break;
-        }
-    } else if (result == 0) {
-        // Timeout reached
-        printf("Timeout reached.\n");
-        break;
-    } else {
-        // Error in select
-        perror("Error in select");
-        break;
-    }
-}
-      printf("Done writing to file\n");
-      close(fd);
+                  // Write in fd file all the server response 
+                  ssize_t writed_bytes = write(fd, server_response, strlen(server_response));
+                   printf("Read size: %d\n", read_size);
+                   printf("Writed bytes: %d\n", writed_bytes);
 
-      printf("Printing director %s\n", dirpath);
-      verify_cache(dirpath); // Delete another entry if needed
+            
+                  // write(fd, server_response, strlen(server_response));
+                  // printf("Read size: %d\n", read_size);
+                
 
-      close(targetSocket);
+                  // if (total_length >= content_length + offset_content) {
+                  //     break;
+                  // }
+              } else if (read_size == 0) {
+                  // Connection closed
+                  printf("Connection closed by the server.\n");
+                  break;
+              }
+          } else if (result == 0) {
+              // Timeout reached
+              printf("Timeout reached.\n");
+              break;
+          } else {
+              // Error in select
+              perror("Error in select");
+              break;
+          }
+      }
+            printf("Done writing to file\n");
+            close(fd);
+
+            printf("Printing director %s\n", dirpath);
+            verify_cache(dirpath); // Delete another entry if needed
+
+            close(targetSocket);
 
       } 
 
-      // Send the file to the client:
+
       printf("Sending file to client\n");
 
       FILE *file = fopen(verify_path, "r");
@@ -291,20 +297,27 @@ void handle_request(ClientRequest* arg){
         return -1;
       }
 
-      char buffer[2000];
+      fseek(file, 0, SEEK_END);
+      long file_size = ftell(file);
+      rewind(file);
+      char* buffer;
+      buffer = (char*)malloc(sizeof(char) * file_size);
+      if (buffer == NULL) {
+        printf("Error allocating memory\n");
+        return -1;
+      }
+
       size_t bytesRead;
-      while ((bytesRead = fread(buffer, 1, sizeof(buffer), file)) > 0) {
+      bytesRead = fread(buffer, 1, file_size, file);
+
         if (send(client_sock, buffer, bytesRead, 0) < 0) {
           printf("Error while sending file content to socket\n");
-          break;
         }
         else {
           printf("Send bytes %d \n", bytesRead);
         }
-      }
-     // send(client_sock, "[FINISHED]",11, 0);
     fclose(file);
-  
+    
   return NULL;
 }
 
@@ -341,6 +354,8 @@ strcat(dirpath, "/");
 
 int main(void) {
 
+  initialize_blackList(&blacklist_head);
+
   int listen_sock, conn_sock, client_size;
   struct sockaddr_in server_addr, client_addr;
 
@@ -368,6 +383,10 @@ int main(void) {
   // Initialize thread pool:
   ThreadPool *pool;
   pool = thread_pool_init(5);
+  int sockets_vector[50];
+  for (int i = 0; i < 50; i++) {
+    sockets_vector[i] = 0;
+  }
 
   // Verify if the thread pool was created successfully:
   if (pool == NULL) {
@@ -400,6 +419,7 @@ int main(void) {
                       exit(EXIT_FAILURE);
                   }
                   printf("Adaugat client %d\n", conn_sock);
+                  sockets_vector[conn_sock] = 1;
               } else {
                   char* buffer = malloc(2000);
                   memset(buffer, '\0', sizeof(buffer));
@@ -409,13 +429,18 @@ int main(void) {
                       int* fdarg = malloc(sizeof(int));
                       *fdarg = events[n].data.fd;
                       thread_pool_add_task(pool, handle_disconnect, fdarg);
+                      sockets_vector[events[n].data.fd] = 0;
                       fflush(stdout);
                   } else if (read_size == -1) {
                       printf("Error while receiving client message\n");
-                                            int* fdarg = malloc(sizeof(int));
+                      int* fdarg = malloc(sizeof(int));
+                      *fdarg = events[n].data.fd;
                        thread_pool_add_task(pool, handle_disconnect, fdarg);
+                       sockets_vector[events[n].data.fd] = 0;
                     
                   } else {
+                  
+
                   ClientRequest* arg = (ClientRequest*)malloc(sizeof(ClientRequest));
                   arg->socketfd = events[n].data.fd;
                   arg->request = buffer;
@@ -425,6 +450,15 @@ int main(void) {
               }
           }
       }
+
+  for (int i=0; i<50; i++){
+    if (sockets_vector[i] == 1){
+            int* fdarg = malloc(sizeof(int));
+      *fdarg = i;
+        thread_pool_add_task(pool, handle_disconnect, fdarg);
+        sockets_vector[i] = 0;
+    }
+  }
   // Closing the socket:
   close(listen_sock);
 
