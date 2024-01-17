@@ -31,7 +31,7 @@ void setnonblocking(int sockfd) {
 #define TASK_QUEUE_SIZE 100
 #define THREAD_MAX_COUNT 100
 #define MAX_CACHE_SIZE 3
-
+#define BUFFER_SIZE 2001
 // Task structure for a thread:
 typedef struct Task {
   void (*function)(void *); // Pointer to the function to be executed
