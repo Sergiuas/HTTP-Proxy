@@ -27,31 +27,36 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    Ui::MainWindow* getUi();
 private slots:
     void file_open() {
         // Show the first widget in the stacked widget
-        centralWidget->setCurrentIndex(0);
+        //centralWidget->setCurrentIndex(0);
     }
 
     void file_save() {
         // Show the second widget in the stacked widget
-        centralWidget->setCurrentIndex(1);
+        //centralWidget->setCurrentIndex(1);
     }
 
     void file_save_as() {
         // Show the third widget in the stacked widget
-        centralWidget->setCurrentIndex(2);
+        //centralWidget->setCurrentIndex(2);
     }
 
     void on_actionAbout_triggered();
 
     void on_actionIntercept_triggered();
 
+    void on_interceptToggler_toggled(bool checked);
+
+    void on_sendResponseBtn_clicked();
+
+
 private:
     Ui::MainWindow *ui;
+    void initializeComponents();
 
-    QStackedWidget *centralWidget;
 
 };
 #endif // MAINWINDOW_H

@@ -13,23 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    // centralWidget = new QStackedWidget(this);
-
-    // QFile file(":/files/about.ui");  // Adjust the file path accordingly
-    // file.open(QFile::ReadOnly);
-    // QWidget *about_widget = loadUi(&file, this);
-    // file.close();
-    // centralWidget->addWidget(about_widget);
-
-    // file(":/files/intercept.ui");  // Adjust the file path accordingly
-    // file.open(QFile::ReadOnly);
-    // QWidget *intercept_widget = loadUi(&file, this);
-    // file.close();
-    // centralWidget->addWidget(intercept_widget);
-
-    //  setCentralWidget(centralWidget);
-
+    initializeComponents();
 }
 
 MainWindow::~MainWindow()
@@ -37,17 +21,44 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+Ui::MainWindow* MainWindow::getUi()
+{
+    return ui;
+}
 
-
+void MainWindow::initializeComponents()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->responseBody->setVisible(false);
+    ui->sendResponseBtn->setVisible(false);
+}
 
 void MainWindow::on_actionAbout_triggered()
 {
-    centralWidget->setCurrentIndex(0);
+    //centralWidget->setCurrentIndex(0);
 }
 
 
 void MainWindow::on_actionIntercept_triggered()
 {
+    ui->stackedWidget->setCurrentIndex(0);
     //centralWidget->setCurrentWidget(1);
 }
 
+
+void MainWindow::on_interceptToggler_toggled(bool checked)
+{
+    if(checked){
+        ui->responseBody->setVisible(true);
+        ui->sendResponseBtn->setVisible(true);
+    }
+    else {
+        ui->responseBody->setVisible(false);
+        ui->sendResponseBtn->setVisible(false);
+    }
+}
+
+void MainWindow::on_sendResponseBtn_clicked()
+{
+    ui->interceptToggler->setChecked(false);
+}
