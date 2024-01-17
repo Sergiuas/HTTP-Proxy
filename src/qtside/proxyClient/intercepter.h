@@ -5,6 +5,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QCoreApplication>
+#include <QRegularExpression>
 #include <mutex>
 #include <QThread>
 #include "logger.h"
@@ -19,6 +20,7 @@ public:
     void toggleIntercept() { activeIntercept=!activeIntercept; }
     bool isIntercepting() { return activeIntercept; }
     void setNextAction(bool value) { nextAction=value; }
+    void setDrop(bool value) { drop=value; }
     void setResponse(QString response){ this->response=response.toLatin1(); }
     void setRequest(QString request) { this->request=request.toLatin1();}
 protected:
@@ -52,6 +54,7 @@ private:
     static std::mutex mutex_;
     bool activeIntercept=false;
     bool nextAction=false;
+    bool drop=false;
     QByteArray response="";
     QByteArray request="";
 
@@ -66,10 +69,12 @@ private:
         response.clear();
         request.clear();
         request = clientSocket->readAll();
-        qDebug()<<"Print request:"<<request;
-        if(request.contains("CONNECT"))
-            clientSocket->disconnectFromHost();
 
+        qDebug()<<"Print request:"<<request;
+        if(request.contains("CONNECT") || request.contains("detectportal") || request.contains("ocsp") ){
+            clientSocket->disconnectFromHost();
+            return;
+        }
         //set up logger;
         Logger * log=Logger::GetInstance();
         //adding request to log
@@ -77,12 +82,19 @@ private:
 
         //intercept request if intercept is active
         nextAction=false;
+        drop=false;
         if(activeIntercept){
-            while(activeIntercept && !nextAction)
+            while(activeIntercept && !nextAction && !drop)
             {
                 QCoreApplication::processEvents();
             }
+            if(drop){
+                clientSocket->disconnectFromHost();
+                //delete request from history
+                return;
+            }
             nextAction=false;
+            drop=false;
         }
         serverSocket->write(request);
 
@@ -90,7 +102,7 @@ private:
 
         // Read the response from the other server
         serverSocket->waitForReadyRead();
-        response += serverSocket->readAll();
+        response.append( serverSocket->readAll());
         qDebug() << "Response from other server:" << response;
 
         //add response to log
@@ -98,11 +110,17 @@ private:
 
         //intercept response if intercept is active
         if(activeIntercept){
-            while(activeIntercept && !nextAction)
+            while(activeIntercept && !nextAction && !drop)
             {
                 QCoreApplication::processEvents();
             }
+            if(drop){
+                clientSocket->disconnectFromHost();
+                //delete request from history
+                return;
+            }
             nextAction=false;
+            drop=false;
         }
         // Send response back to the browser
         clientSocket->write(response);

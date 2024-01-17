@@ -26,6 +26,8 @@ private slots:
 
     void on_responseText_textChanged();
 
+    void on_dropBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     static MainWindow* instance;

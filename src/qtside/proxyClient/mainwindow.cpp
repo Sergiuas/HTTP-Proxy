@@ -68,3 +68,9 @@ void MainWindow::on_responseText_textChanged()
     Intercepter::GetInstance()->setResponse(ui->responseText->toPlainText());
 }
 
+
+void MainWindow::on_dropBtn_clicked()
+{
+    Intercepter::GetInstance()->setDrop(true);
+}
+
