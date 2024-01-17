@@ -31,7 +31,7 @@ void setnonblocking(int sockfd) {
 #define TASK_QUEUE_SIZE 100
 #define THREAD_MAX_COUNT 100
 #define MAX_CACHE_SIZE 3
-
+#define BUFFER_SIZE 4096
 // Task structure for a thread:
 typedef struct Task {
   void (*function)(void *); // Pointer to the function to be executed
@@ -60,6 +60,89 @@ typedef struct ClientRequest{
     //char cachefiles[10][100];
 } ClientRequest;
 
+typedef struct blackList {
+    char* hostname;
+    struct blackList* next;
+} blackList;
+
+pthread_mutex_t blacklist_mutex; 
+
+void initialize_blackList(blackList** head) {
+    *head = NULL;
+
+    // Open a file for reading one line for each hostname
+    FILE* file = fopen("blacklist.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file\n");
+        return;
+    }
+
+    char* line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    while ((read = getline(&line, &len, file)) != -1) {
+        line[read - 1] = '\0';
+
+        add_blackList(head, line);
+    }
+
+    if (pthread_mutex_init(&blacklist_mutex, NULL) != 0) {
+    printf("Error while initializing mutex\n");
+    return -1;
+  }
+    fclose(file);
+}
+
+void add_blackList(blackList** head, char* hostname) {
+    blackList* new_node = (blackList*)malloc(sizeof(blackList));
+    if (new_node == NULL) {
+        printf("Error allocating memory\n");
+        return;
+    }
+
+    printf("Adding %s to blacklist\n", hostname);
+    new_node->hostname = (char*)malloc(strlen(hostname) + 1);
+    if (new_node->hostname == NULL) {
+        printf("Error allocating memory\n");
+        return;
+    }
+
+    strcpy(new_node->hostname, hostname);
+
+    new_node->next = NULL;
+
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+
+    blackList* current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+
+    current->next = new_node;
+}
+
+
+bool verify_hostname(char* hostname, blackList* head) {
+  pthread_mutex_lock(&blacklist_mutex); 
+
+  blackList* current = head;
+  while (current != NULL) {
+    if (strcmp(current->hostname, hostname) == 0) {
+      printf("Hostname %s is blacklisted\n", hostname);
+      return true;
+      pthread_mutex_unlock(&blacklist_mutex);
+    }
+
+    current = current->next;
+  }
+
+  pthread_mutex_unlock(&blacklist_mutex);
+  return false;
+}
  
 size_t b64_encoded_size(size_t inlen)
 {
