@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    Ui::MainWindow* getUi();
 private slots:
     void file_open() {
         // Show the first widget in the stacked widget
@@ -48,8 +48,14 @@ private slots:
 
     void on_actionIntercept_triggered();
 
+    void on_interceptToggler_toggled(bool checked);
+
+    void on_sendResponseBtn_clicked();
+
+
 private:
     Ui::MainWindow *ui;
+    void initializeComponents();
 
 
 };

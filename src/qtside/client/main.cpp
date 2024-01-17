@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.show();
-    Intercepter* intercepter=Intercepter::GetInstance();
+    Intercepter* intercepter=Intercepter::GetInstance(w.getUi());
     if(!intercepter->listen(QHostAddress::Any, 8888)){
         qCritical() << "Failed to start server:" << intercepter->errorString();
         return 1;

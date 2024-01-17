@@ -38,32 +38,57 @@
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>400</x>
-        <y>230</y>
-        <width>211</width>
+        <x>220</x>
+        <y>70</y>
+        <width>200</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>main page</string>
+       <string>Intercept</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
-    </widget>
-    <widget class="QWidget" name="interceptPage">
-     <widget class="QLabel" name="label">
+     <widget class="QTextEdit" name="responseBody">
       <property name="geometry">
        <rect>
-        <x>220</x>
-        <y>150</y>
-        <width>241</width>
-        <height>20</height>
+        <x>125</x>
+        <y>130</y>
+        <width>550</width>
+        <height>271</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="sendResponseBtn">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>430</y>
+        <width>100</width>
+        <height>29</height>
        </rect>
       </property>
       <property name="text">
-       <string>interceptPage</string>
+       <string>Send Response</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="interceptToggler">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>70</y>
+        <width>112</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>On/Off</string>
       </property>
      </widget>
     </widget>
+    <widget class="QWidget" name="interceptPage"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
