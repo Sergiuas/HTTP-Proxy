@@ -81,68 +81,72 @@ private:
     }
 
     void handleClientRequest(QTcpSocket *clientSocket) {
-        response.clear();
-        request.clear();
-        request = clientSocket->readAll();
+        bool ok=false;
+        do{
+            response.clear();
+            request.clear();
+            request = clientSocket->readAll();
 
-        qDebug()<<"Print request:"<<request;
-        for(int i=0;i<blockedList.count();i++)
-            if(request.contains(blockedList[i].toStdString().c_str())){
-                clientSocket->disconnectFromHost();
-                return;
-            }
-        //set up logger;
-        Logger * log=Logger::GetInstance();
-        //adding request to log
-        log->addRequest(request);
+            qDebug()<<"Print request:"<<request;
+            for(int i=0;i<blockedList.count();i++)
+                if(request.contains(blockedList[i].toStdString().c_str())){
+                    clientSocket->disconnectFromHost();
+                    return;
+                }
+            if(request.contains("HTTP/1.1 200")) ok=true;
+            //set up logger;
+            Logger * log=Logger::GetInstance();
+            //adding request to log
+            log->addRequest(request);
 
-        //intercept request if intercept is active
-        nextAction=false;
-        drop=false;
-        if(activeIntercept){
-            while(activeIntercept && !nextAction && !drop)
-            {
-                QCoreApplication::processEvents();
-            }
-            if(drop){
-                clientSocket->disconnectFromHost();
-                //delete request from history
-                return;
-            }
+            //intercept request if intercept is active
             nextAction=false;
             drop=false;
-        }
-        serverSocket->write(request);
-
-        serverSocket->waitForBytesWritten();
-
-        // Read the response from the other server
-        serverSocket->waitForReadyRead();
-        response.append( serverSocket->readAll());
-        //while(response.endsWith("[FINISHED]")) response.append( serverSocket->readAll());
-        qDebug() << "Response from other server:" << response;
-        //if (response.endsWith("[FINISHED]")) response.chop(10);
-
-        //add response to log
-        log->addResponse(response);
-
-        //intercept response if intercept is active
-        if(activeIntercept){
-            while(activeIntercept && !nextAction && !drop)
-            {
-                QCoreApplication::processEvents();
+            if(activeIntercept){
+                while(activeIntercept && !nextAction && !drop)
+                {
+                    QCoreApplication::processEvents();
+                }
+                if(drop){
+                    clientSocket->disconnectFromHost();
+                    //delete request from history
+                    return;
+                }
+                nextAction=false;
+                drop=false;
             }
-            if(drop){
-                clientSocket->disconnectFromHost();
-                //delete request from history
-                return;
+            serverSocket->write(request);
+
+            serverSocket->waitForBytesWritten();
+
+            // Read the response from the other server
+            serverSocket->waitForReadyRead();
+            response.append( serverSocket->readAll());
+            //while(response.endsWith("[FINISHED]")) response.append( serverSocket->readAll());
+            qDebug() << "Response from other server:" << response;
+            //if (response.endsWith("[FINISHED]")) response.chop(10);
+
+            //add response to log
+            log->addResponse(response);
+
+            //intercept response if intercept is active
+            if(activeIntercept){
+                while(activeIntercept && !nextAction && !drop)
+                {
+                    QCoreApplication::processEvents();
+                }
+                if(drop){
+                    clientSocket->disconnectFromHost();
+                    //delete request from history
+                    return;
+                }
+                nextAction=false;
+                drop=false;
             }
-            nextAction=false;
-            drop=false;
-        }
-        // Send response back to the browser
-        clientSocket->write(response);
-        clientSocket->waitForBytesWritten();
+            // Send response back to the browser
+            clientSocket->write(response);
+            clientSocket->waitForBytesWritten();
+        }while(!ok);
         clientSocket->disconnectFromHost();
     }
 };
