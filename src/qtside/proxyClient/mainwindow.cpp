@@ -15,6 +15,12 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->requestsList->setColumnCount(2);
+    QStringList headerLabels;
+    headerLabels << "Type of Request" << "Host";
+    ui->requestsList->setHorizontalHeaderLabels(headerLabels);
+    ui->requestsList->setColumnWidth(0,200);
+    ui->requestsList->setColumnWidth(1,900);
 }
 
 MainWindow::~MainWindow()
@@ -22,6 +28,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::addListElement(QString type, QString hostname)
+{
+    int newRow = ui->requestsList->rowCount();
+    ui->requestsList->insertRow(newRow);
+    QTableWidgetItem *typeCol = new QTableWidgetItem(type);
+    ui->requestsList->setItem(newRow, 0, typeCol);
+    QTableWidgetItem *hostnameCol = new QTableWidgetItem(hostname);
+    ui->requestsList->setItem(newRow,1,hostnameCol);
+}
 
 void MainWindow::setRequestText(QString request)
 {
@@ -65,7 +80,7 @@ void MainWindow::on_requestText_textChanged()
 void MainWindow::on_responseText_textChanged()
 {
     Logger::GetInstance()->setLastResponse(ui->responseText->toPlainText());
-    Intercepter::GetInstance()->setResponse(ui->responseText->toPlainText());
+    //Intercepter::GetInstance()->setResponse(ui->responseText->toPlainText());
 }
 
 

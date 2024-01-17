@@ -73,16 +73,6 @@
        </widget>
       </widget>
      </widget>
-     <widget class="QListWidget" name="listWidget">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>30</y>
-        <width>1201</width>
-        <height>221</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QWidget" name="horizontalLayoutWidget">
       <property name="geometry">
        <rect>
@@ -126,11 +116,31 @@
        </item>
       </layout>
      </widget>
+     <widget class="QTableWidget" name="requestsList">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>30</y>
+        <width>1201</width>
+        <height>221</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="historyTab">
      <attribute name="title">
       <string>History</string>
      </attribute>
+     <widget class="QListWidget" name="listWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1201</width>
+        <height>700</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>

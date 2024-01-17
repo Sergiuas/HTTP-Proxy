@@ -17,6 +17,7 @@ public:
     static MainWindow* getInstance();
     void setRequestText(QString request);
     void setResponseText(QString response);
+    void addListElement(QString type, QString hostname);
 private slots:
     void on_interceptBtn_clicked();
 
@@ -27,6 +28,7 @@ private slots:
     void on_responseText_textChanged();
 
     void on_dropBtn_clicked();
+
 
 private:
     Ui::MainWindow *ui;
