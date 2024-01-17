@@ -127,11 +127,11 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="historyTab">
+    <widget class="QWidget" name="blockedTab">
      <attribute name="title">
-      <string>History</string>
+      <string>Blocked List</string>
      </attribute>
-     <widget class="QListWidget" name="listWidget_2">
+     <widget class="QListWidget" name="blockedSitesList">
       <property name="geometry">
        <rect>
         <x>0</x>
