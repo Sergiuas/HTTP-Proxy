@@ -29,7 +29,8 @@ private:
         this->ui=ui;
         this->serverSocket = new QTcpSocket(this);
         //serverSocket->connectToHost("10.10.24.28", 8081);
-        serverSocket->connectToHost("192.168.56.56", 8080);
+        //serverSocket->connectToHost("192.168.56.56", 8080);
+        serverSocket->connectToHost("192.168.43.119", 8081);
         if (!serverSocket->waitForConnected()) {
             qWarning() << "Failed to connect to the server";
         }
@@ -63,7 +64,13 @@ private:
 
          // // Read the response from the other server
          serverSocket->waitForReadyRead();
-         responseData = serverSocket->readAll();
+         responseData += serverSocket->readAll();
+         qInfo()<<"Response before chop:"<<responseData;
+         //while(responseData.endsWith("[FINISHED]")){
+         //    serverSocket->waitForReadyRead();
+         //    responseData += serverSocket->readAll();
+         //}
+         responseData.chop(11);
          qDebug() << "Response from other server:" << responseData;
          if(ui->interceptToggler->isChecked()) {
              ui->responseBody->append(responseData);
