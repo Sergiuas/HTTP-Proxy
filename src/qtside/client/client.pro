@@ -10,17 +10,18 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    application.cpp \
     intercepter.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    application.h \
     intercepter.h \
     mainwindow.h
 
 FORMS += \
     about.ui \
-    intercept.ui \
     mainwindow.ui
 
 # Default rules for deployment.
