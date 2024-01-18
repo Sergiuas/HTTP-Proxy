@@ -96,3 +96,21 @@ void MainWindow::on_dropBtn_clicked()
     Intercepter::GetInstance()->setDrop(true);
 }
 
+
+void MainWindow::on_blockBtn_clicked()
+{
+    if(!ui->requestsList->selectedItems().empty())
+    {
+        QFile file("../proxyClient/blocked.txt");
+
+        // Open the file in read-only mode
+        if (file.open(QIODevice::Append | QIODevice::Text | QIODevice::ReadWrite)) {
+            QTextStream stream(&file);
+            int row=ui->requestsList->selectedItems().toList().last()->row();
+            qInfo()<<ui->requestsList->item(row,1)->text();
+            stream<<"\r\n"<<ui->requestsList->item(row,1)->text();
+            file.close();
+        }
+    }
+}
+

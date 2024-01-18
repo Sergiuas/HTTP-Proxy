@@ -31,6 +31,8 @@ private slots:
     void on_dropBtn_clicked();
 
 
+    void on_blockBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     static MainWindow* instance;

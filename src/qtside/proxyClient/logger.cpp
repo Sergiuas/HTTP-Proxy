@@ -19,7 +19,9 @@ void Logger::addRequest(QString request)
     QString type=request.split(" ")[0];
     if(request.split("\r\n").count()>1)
     {
-        QString hostname=request.split("\r\n")[1];
+        QString hostname;
+        if(request.split("\r\n")[1].split(" ").count()>1)
+            hostname=request.split("\r\n")[1].split(" ")[1];
         MainWindow::getInstance()->addListElement(type,hostname);
     }
 

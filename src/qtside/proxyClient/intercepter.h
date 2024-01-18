@@ -43,7 +43,7 @@ private:
         if (!serverSocket->waitForConnected()) {
             qWarning() << "Failed to connect to the server";
         }
-        QFile file("C:\\Users\\Gabi\\Desktop\\info\\pso\\HTTP-Proxy\\src\\qtside\\proxyClient\\blocked.txt");
+        QFile file(":/files/blocked.txt");
 
         // Open the file in read-only mode
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
