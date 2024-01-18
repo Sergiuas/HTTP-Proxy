@@ -6,6 +6,7 @@
     </qresource>
     <qresource prefix="/files">
         <file>about.ui</file>
+        <file>blocked.txt</file>
     </qresource>
     <qresource prefix="/new/prefix1"/>
 </RCC>

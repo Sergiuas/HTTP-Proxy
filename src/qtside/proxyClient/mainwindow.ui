@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="proxyTab">
      <attribute name="title">
@@ -108,9 +108,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="actionBtn">
+        <widget class="QPushButton" name="blockBtn">
          <property name="text">
-          <string>Action</string>
+          <string>Block Host</string>
          </property>
         </widget>
        </item>
