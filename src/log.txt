@@ -2520,3 +2520,330 @@ Cookie: login=test%2Ftest
 
 
 
+[10:02:35] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:14:43] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:16:09] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:17:20] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:21:14] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:23:06] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:24:43] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:28:50] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:28:52] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:28:54] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:28:56] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:28:58] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:29:31] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:31:36] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:31:38] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/login.php
+Connection: keep-alive
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:32:12] GET http://httpforever.com/ HTTP/1.1
+Host: httpforever.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Wed, 22 Mar 2023 14:54:48 GMT
+If-None-Match: "641b16b8-1404"
+
+
+
+[10:32:22] GET http://http-textarea.badssl.com/ HTTP/1.1
+Host: http-textarea.badssl.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:32:24] GET http://http-textarea.badssl.com/style.css HTTP/1.1
+Host: http-textarea.badssl.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://http-textarea.badssl.com/
+
+
+
+[10:32:26] GET http://http-textarea.badssl.com/icons/favicon-red.ico HTTP/1.1
+Host: http-textarea.badssl.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://http-textarea.badssl.com/
+
+
+
+[10:32:26] GET http://http-textarea.badssl.com/icons/icon-red.png HTTP/1.1
+Host: http-textarea.badssl.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://http-textarea.badssl.com/
+
+
+
+[10:32:34] GET http://www.testingmcafeesites.com/index.html HTTP/1.1
+Host: www.testingmcafeesites.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:32:36] GET http://www.testingmcafeesites.com/favicon.ico HTTP/1.1
+Host: www.testingmcafeesites.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://www.testingmcafeesites.com/index.html
+
+
+
+[10:32:59] POST http://testphp.vulnweb.com/userinfo.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 20
+Origin: http://testphp.vulnweb.com
+Connection: keep-alive
+Referer: http://testphp.vulnweb.com/login.php
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+uname=test&pass=test
+
+[10:33:02] GET http://testphp.vulnweb.com/logout.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://testphp.vulnweb.com/userinfo.php
+Cookie: login=test%2Ftest
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:33:10] GET http://testphp.vulnweb.com/categories.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://testphp.vulnweb.com/userinfo.php
+Upgrade-Insecure-Requests: 1
+
+
+
+[10:36:12] GET http://testphp.vulnweb.com/login.php HTTP/1.1
+Host: testphp.vulnweb.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://testphp.vulnweb.com/categories.php
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
+
+
