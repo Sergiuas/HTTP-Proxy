@@ -4,6 +4,9 @@
   <img src="https://github.com/Sergiuas/HTTP-Proxy/blob/main/proxydock.png?raw=true" alt="alt text" width="400" height="400">
 </p>
 
+## Project Documentation
+
+You can find the project documentation here: [file](./proxydock_srd.pdf).
 
 ## Overview
 
@@ -37,6 +40,13 @@ make
 make run
 ```
 Build and run the client side app using a qt and c++ ide such as Qt Creator.
+
+
+### Good sites for testing
+http://www.testingmcafeesites.com/index.html (and the links you find here)
+http://testphp.vulnweb.com/login.php
+http://httpforever.com/
+http://http-textarea.badssl.com/
 
 
 ## Arhitecture
