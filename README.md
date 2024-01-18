@@ -11,8 +11,8 @@
 
 ## Features
 - Proxy Server Configuration
-- Request Routing
-- Caching
+- Request Routing 
+- Caching (based on connection and file access time)
 - Protocol Support (HTTP/1.0, HTTP/1.1, HTTP/2)
 - Content Filtering
 - Traffic Inspection and Manipulation
@@ -28,13 +28,13 @@ Before installing, ensure you have the following dependencies:
 
 ```bash
 git clone https://github.com/Sergiuas/HTTP-Proxy.git
-cd HTTP-Proxy/src
+cd HTTP-Proxy/src/
 ```
 
 ### Build and Run
 ```bash
 make
-./server
+make run
 ```
 Build and run the client side app using a qt and c++ ide such as Qt Creator.
 
