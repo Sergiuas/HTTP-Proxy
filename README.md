@@ -39,6 +39,13 @@ make run
 Build and run the client side app using a qt and c++ ide such as Qt Creator.
 
 
+### Good sites for testing
+http://www.testingmcafeesites.com/index.html (and the links you find here)
+http://testphp.vulnweb.com/login.php
+http://httpforever.com/
+http://http-textarea.badssl.com/
+
+
 ## Arhitecture
 
 ```mermaid
