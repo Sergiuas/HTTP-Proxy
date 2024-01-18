@@ -1,0 +1,7 @@
+detectportal.firefox.com
+push.services.mozilla.com
+r3.o.lencr.org
+push.services.mozilla.com:443
+ocsp.pki.goog
+ocsp.digicert.com
+ocsp.r2m02.amazontrust.com
