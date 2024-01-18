@@ -48,6 +48,20 @@ http://testphp.vulnweb.com/login.php
 http://httpforever.com/
 http://http-textarea.badssl.com/
 
+### Project flow
+
+*Client interface.*
+![Screenshot 1](./screenshots/q3.jpeg)
+
+
+*Blacklist initialisation.*
+![Screenshot 2](./screenshots/q1.png)
+
+
+*Log.*
+![Screenshot 3](./screenshots/q2.png)
+
+
 
 ## Arhitecture
 
