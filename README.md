@@ -4,6 +4,9 @@
   <img src="https://github.com/Sergiuas/HTTP-Proxy/blob/main/proxydock.png?raw=true" alt="alt text" width="400" height="400">
 </p>
 
+## Project Documentation
+
+You can find the project documentation in the [PDF file](./proxydock_srd.pdf).
 
 ## Overview
 
