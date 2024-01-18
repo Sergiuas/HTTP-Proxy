@@ -1,17 +1,16 @@
 #include "utils.h"
 #include <sys/epoll.h>
+#include <signal.h>
+#include <sys/signalfd.h>
 #define MAX_EVENTS 50
 
-// Variable for blacklist head:
 blackList *blacklist_head;
 
-// Create listening socket:
 int create_listening_socket(uint16_t _port) {
   int socket_desc;
   struct sockaddr_in server_addr;
   uint16_t port = _port;
 
-  // Create socket, we use SOCK_STREAM for TCP:
   socket_desc = socket(AF_INET, SOCK_STREAM, 0);
 
   if (socket_desc < 0) {
@@ -22,20 +21,16 @@ int create_listening_socket(uint16_t _port) {
   printf("Socket created successfully\n");
 
   int setopt = 1;
-  // Reuse the port. Otherwise, on restart, port 8000 is usually still occupied
-  // for a bit and we need to start at another port.
+
   if (-1 == setsockopt(socket_desc, SOL_SOCKET, SO_REUSEADDR, (char *)&setopt,
                        sizeof(setopt))) {
     error("ERROR setting socket options");
   }
 
-  // Set port and IP that we'll be listening for, any other IP_SRC or port will
-  // be dropped:
   server_addr.sin_family = AF_INET;
   server_addr.sin_port = htons(port);
   server_addr.sin_addr.s_addr = INADDR_ANY;
 
-  // Bind to the set port and IP:
   if (bind(socket_desc, (struct sockaddr *)&server_addr, sizeof(server_addr)) <
       0) {
     printf("Couldn't bind to the port\n");
@@ -43,7 +38,6 @@ int create_listening_socket(uint16_t _port) {
   }
   printf("Done with binding\n");
 
-  // Listen for clients. We allow at most 5 clients in the queue:
   if (listen(socket_desc, 5) < 0) {
     printf("Error while listening\n");
     return -1;
@@ -53,11 +47,10 @@ int create_listening_socket(uint16_t _port) {
   return socket_desc;
 }
 
-// Create a function to parse a http request:
-void parse_request(char *buffer, char*method, char *hostname, char *path) { // strtok not thread safe
+void parse_request(char *buffer, char*method, char *hostname, char *path) { 
   char *token = strtok(buffer, " \r\n");
   while (token != NULL) {
-    if (strcmp(token, "GET") == 0 || strcmp(token, "POST") == 0) { // TODO: Add support for other methods
+    if (strcmp(token, "GET") == 0 || strcmp(token, "POST") == 0) { 
       strcpy(method, token);
       token = strtok(NULL, " \r\n");
       if (token != NULL) {
@@ -74,7 +67,6 @@ void parse_request(char *buffer, char*method, char *hostname, char *path) { // s
 }
 
 void verify_cache(char* dirpath) {
-  // Open directory, count the number of files and delete the oldest one if the number is greater than 10:
   DIR *dir;
   struct dirent *ent;
   int file_count = 0;
@@ -87,9 +79,9 @@ void verify_cache(char* dirpath) {
         file_count++;
         struct stat attr;
         stat(ent->d_name, &attr);
-        if (oldest_file == NULL || attr.st_mtime < oldest_file_time) {
+        if (oldest_file == NULL || attr.st_atime < oldest_file_time) {
           oldest_file = ent->d_name;
-          oldest_file_time = attr.st_mtime;
+          oldest_file_time = attr.st_atime;
         }
       }
     }
@@ -110,17 +102,16 @@ void verify_cache(char* dirpath) {
 }
 
 void handle_request(ClientRequest* arg){
-  printf("Thread #%ld\n", pthread_self()); // Print the thread id;
+  printf("Thread #%ld\n", pthread_self()); 
 
-  //ClientRequest* arg = (ClientRequest*)req;
   int client_sock = arg->socketfd;
   char* client_message = arg->request;
 
   char* unmodified_message = malloc(2000);
-  strcpy(unmodified_message, arg->request); // ----------------- salvam requestul original
+  strcpy(unmodified_message, arg->request); 
 
   char* filepath = malloc(200);
-  char* encodedfilepath; //= malloc(400);
+  char* encodedfilepath;
   char* dirpath = malloc(200);
   snprintf(dirpath, 10, "%d", client_sock);
   strcat(dirpath, "/");
@@ -137,14 +128,14 @@ void handle_request(ClientRequest* arg){
   char first_line[200];
 
   strcpy(first_line, client_message);
-  //  strcpy(to_find, client_message);
   parse_request(client_message, method, hostname, path);
 
   printf("\n\nMethod: %s\n", method);
   printf("Hostname: %s\n", hostname);
   printf("Path: %s\n", path);
 
-  if (verify_hostname(hostname, blacklist_head) == 1) {
+  if (verify_hostname(hostname, blacklist_head) == true) {
+    pthread_exit(NULL);
     return NULL;
   }
 
@@ -163,22 +154,16 @@ void handle_request(ClientRequest* arg){
 
 
     if (access(verify_path, F_OK) != 0) { // DACA NU EXISTA, IL CREAM
-          // Find the end of the first line
       char *end_of_first_line = strchr(first_line, '\r');
       if (end_of_first_line != NULL) {
-        // Null-terminate the first line
         *end_of_first_line = '\0';
-
-    // Add two CRLF sequences to the end of the first line
     strcat(first_line, "\r\n\r\n");
 
     printf("Modified Request: %s\n", first_line);
      }  else
     printf("Error while modifying request\n");
 
-      // Take the port number from the hostname, if any, else use port 80:
       strcpy(url, hostname);
-      // get just the url without the port
 
       char *port = strstr(url, ":");
       if (port != NULL) {
@@ -190,9 +175,6 @@ void handle_request(ClientRequest* arg){
 
       int int_port = atoi(port);
       printf("Port: %d\n", int_port);
-
-      // struct addrinfo hints, *res;
-      // int rv, server_sock; //--------------- Set on what port to get the answer
  
       struct sockaddr_in targetAddr;
       memset(&targetAddr, 0, sizeof(targetAddr));
@@ -211,20 +193,16 @@ void handle_request(ClientRequest* arg){
     connect(targetSocket, (struct sockaddr*)&targetAddr, sizeof(targetAddr));
 
     printf("Ip address: %s\n", inet_ntoa(targetAddr.sin_addr));
-      // Send the request to the server:
       if (write(targetSocket, unmodified_message, strlen(unmodified_message)) < 0) { 
         printf("Error while sending request to server\n");
         return NULL;
       }
 
+      write_log(unmodified_message);
       
-      int fd = open(verify_path, O_CREAT | O_WRONLY, 0644);
+      //int fd = open(verify_path, O_CREAT | O_WRONLY, 0644);
+      FILE* wfile = fopen(verify_path, "wb");
       printf("Writing to file\n");
-      // int total_length = 0;
-      // int content_length = 0;
-      // int offset_content = 0;
-      // Receive the response from the server:
-
       char server_response[4096];
       int flags = fcntl(targetSocket, F_GETFL, 0);
       fcntl(targetSocket, F_SETFL, flags | O_NONBLOCK);
@@ -232,57 +210,54 @@ void handle_request(ClientRequest* arg){
       FD_ZERO(&read_fds);
       FD_SET(targetSocket, &read_fds);
 
-      // Set up timeout struct
       struct timeval timeout;
-      timeout.tv_sec = 1;
-      timeout.tv_usec = 0;
+      timeout.tv_sec =0;
+      timeout.tv_usec = 500000;
 
      while (1) {
           int result = select(targetSocket + 1, &read_fds, NULL, NULL, &timeout);
 
           if (result > 0) {
-              // Data is available to read
-              char server_response[4096];
+              char server_response[4097];
               ssize_t read_size = recv(targetSocket, server_response, BUFFER_SIZE - 1, 0);
 
               if (read_size > 0) {
                   server_response[read_size] = '\0';
-
-                  // Process the data as needed
-
-                  // Write in fd file all the server response 
-                  ssize_t writed_bytes = write(fd, server_response, strlen(server_response));
+                  ssize_t writed_bytes = 0;
+                  ssize_t total_saved = read_size;
+                  while ((writed_bytes = fwrite(server_response+writed_bytes, 1, total_saved, wfile)) > 0 && total_saved > 0) {
+                      total_saved -= writed_bytes;
                    printf("Read size: %d\n", read_size);
                    printf("Writed bytes: %d\n", writed_bytes);
-
+                  }
             
-                  // write(fd, server_response, strlen(server_response));
-                  // printf("Read size: %d\n", read_size);
-                
-
-                  // if (total_length >= content_length + offset_content) {
-                  //     break;
-                  // }
               } else if (read_size == 0) {
-                  // Connection closed
                   printf("Connection closed by the server.\n");
                   break;
               }
           } else if (result == 0) {
-              // Timeout reached
               printf("Timeout reached.\n");
               break;
           } else {
-              // Error in select
               perror("Error in select");
               break;
           }
       }
             printf("Done writing to file\n");
-            close(fd);
+              fclose(wfile);
+
+          struct stat st;
+          stat(verify_path, &st);
+          long file_size = st.st_size;
+          if (file_size == 0) {
+            printf("File is empty - delete entry\n");
+            remove(verify_path);
+          }
+
+
 
             printf("Printing director %s\n", dirpath);
-            verify_cache(dirpath); // Delete another entry if needed
+            verify_cache(dirpath); 
 
             close(targetSocket);
 
@@ -291,12 +266,15 @@ void handle_request(ClientRequest* arg){
 
       printf("Sending file to client\n");
 
-      FILE *file = fopen(verify_path, "r");
+      FILE *file = fopen(verify_path, "rb");
       if (file == NULL) {
-        printf("Unable to open file %s\n", path);
+        printf("Unable to open file %s\n", verify_path);
+        pthread_exit(NULL);
         return -1;
       }
 
+      verify_cache(dirpath);  
+       
       fseek(file, 0, SEEK_END);
       long file_size = ftell(file);
       rewind(file);
@@ -310,25 +288,26 @@ void handle_request(ClientRequest* arg){
       size_t bytesRead;
       bytesRead = fread(buffer, 1, file_size, file);
 
+
         if (send(client_sock, buffer, bytesRead, 0) < 0) {
           printf("Error while sending file content to socket\n");
         }
         else {
           printf("Send bytes %d \n", bytesRead);
         }
+        
     fclose(file);
     
   return NULL;
 }
 
 void handle_disconnect(void* socket_desc){
-printf("Thread deconectat #%ld\n", pthread_self()); // Print the thread id;
+printf("Thread deconectat #%ld\n", pthread_self());
 
 char dirpath[10];
 snprintf(dirpath, 10, "%d", *(int*)socket_desc);
 strcat(dirpath, "/");
 
- //Remove all files from dir and after remove the dir
     DIR *d;
     struct dirent *dir;
     d = opendir(dirpath);
@@ -346,7 +325,6 @@ strcat(dirpath, "/");
     }
     rmdir(dirpath);
 
-  // Close the socket:
   close(*(int*)socket_desc);
   free(socket_desc);
   return NULL;
@@ -380,19 +358,54 @@ int main(void) {
           exit(EXIT_FAILURE);
       }
 
-  // Initialize thread pool:
   ThreadPool *pool;
-  pool = thread_pool_init(5);
+  pool = thread_pool_init(10);
   int sockets_vector[50];
   for (int i = 0; i < 50; i++) {
     sockets_vector[i] = 0;
   }
 
-  // Verify if the thread pool was created successfully:
   if (pool == NULL) {
     printf("Error while initializing thread pool\n");
     return -1;
   }
+
+  ev.events = EPOLLIN;
+  ev.data.fd = STDIN_FILENO;
+  if (epoll_ctl(epollfd, EPOLL_CTL_ADD, STDIN_FILENO, &ev) == -1) {
+      perror("epoll_ctl: stdin");
+      exit(EXIT_FAILURE);
+  }
+
+
+    int sfd, retsfd;
+    sigset_t sigset;
+
+    retsfd = sigprocmask(SIG_SETMASK, NULL, &sigset);
+    if (retsfd == -1) {
+        perror("sigprocmask");
+        exit(EXIT_FAILURE);
+    }
+
+    sigaddset(&sigset, SIGINT);
+    sigprocmask(SIG_SETMASK, &sigset, NULL);
+
+    sigemptyset(&sigset);
+    sigaddset(&sigset, SIGINT);
+
+    sfd = signalfd(-1, &sigset, 0);
+    if (sfd == -1) {
+        perror("signalfd");
+        exit(EXIT_FAILURE);
+    }
+
+      ev.events = EPOLLIN;
+      ev.data.fd = sfd;
+      if (epoll_ctl(epollfd, EPOLL_CTL_ADD, sfd, &ev) == -1) {
+          perror("epoll_ctl: sfd");
+          exit(EXIT_FAILURE);
+      }
+
 
       for (;;) {
           nfds = epoll_wait(epollfd, events, MAX_EVENTS, -1);
@@ -420,7 +433,22 @@ int main(void) {
                   }
                   printf("Adaugat client %d\n", conn_sock);
                   sockets_vector[conn_sock] = 1;
-              } else {
+              } else if  (events[n].data.fd == sfd)
+              {
+                printf("Received signal\n");
+                struct signalfd_siginfo fdsi;
+                ssize_t s = read(sfd, &fdsi, sizeof(struct signalfd_siginfo));
+                if (s != sizeof(struct signalfd_siginfo)) {
+                    perror("read(signalfd)");
+                    exit(EXIT_FAILURE);
+                }
+
+                if (fdsi.ssi_signo == SIGINT) {
+                    printf("Received SIGINT. Cleaning up and exiting.\n");
+                    exit(EXIT_SUCCESS);
+                }
+              }
+              else {
                   char* buffer = malloc(2000);
                   memset(buffer, '\0', sizeof(buffer));
                   int read_size = recv(events[n].data.fd, buffer, 2000, 0);
@@ -459,7 +487,6 @@ int main(void) {
         sockets_vector[i] = 0;
     }
   }
-  // Closing the socket:
   close(listen_sock);
 
   return 0;

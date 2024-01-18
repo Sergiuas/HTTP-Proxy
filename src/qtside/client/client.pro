@@ -11,7 +11,6 @@ CONFIG += c++17
 
 SOURCES += \
     application.cpp \
-    intercepter.cpp \
     main.cpp \
     mainwindow.cpp
 
