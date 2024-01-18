@@ -1,0 +1,46 @@
+HTTP/1.1 200 OK
+Server: nginx/1.19.0
+Date: Thu, 18 Jan 2024 07:41:06 GMT
+Content-Type: text/css
+Content-Length: 562
+Last-Modified: Wed, 11 May 2011 10:27:48 GMT
+Connection: keep-alive
+ETag: "4dca64a4-232"
+Accept-Ranges: bytes
+
+body {
+  font-family: Verdana, Geneva, Arial, helvetica, sans-serif;
+}
+
+td {
+	font-family: Verdana, Geneva, Arial, helvetica, sans-serif;
+}
+
+th {
+	font-family: Verdana, Geneva, Arial, helvetica, sans-serif;
+}
+
+a {
+	text-decoration: none;
+	color:#333333;
+}
+
+a:hover {
+	background-color: #FFEE00;
+}
+
+td.bordered {
+	border: 1px solid #CCCCCC;
+	background:#FFCC00;
+}
+
+#contentDiv {
+	border: 1px solid #CCCCCC;
+}
+
+#xmlDiv {
+	font-family: "Courier New", Courier, mono;
+	font-size: 12px;
+	color: #33CC00;
+	background-color: #000000;
+}
