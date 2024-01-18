@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->requestsList->setHorizontalHeaderLabels(headerLabels);
     ui->requestsList->setColumnWidth(0,200);
     ui->requestsList->setColumnWidth(1,900);
+    ui->menuTabMenu->setCurrentIndex(0);
 }
 
 MainWindow::~MainWindow()
@@ -36,6 +37,12 @@ void MainWindow::addListElement(QString type, QString hostname)
     ui->requestsList->setItem(newRow, 0, typeCol);
     QTableWidgetItem *hostnameCol = new QTableWidgetItem(hostname);
     ui->requestsList->setItem(newRow,1,hostnameCol);
+
+}
+
+void MainWindow::addBlockedElement(QString site)
+{
+    ui->blockedSitesList->addItem(new QListWidgetItem(site));
 }
 
 void MainWindow::setRequestText(QString request)

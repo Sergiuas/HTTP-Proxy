@@ -18,6 +18,7 @@ public:
     void setRequestText(QString request);
     void setResponseText(QString response);
     void addListElement(QString type, QString hostname);
+    void addBlockedElement(QString site);
 private slots:
     void on_interceptBtn_clicked();
 
