@@ -39,6 +39,8 @@ cd HTTP-Proxy/src/
 make
 make run
 ```
+
+You need to modify your Firefox network settings by changing the proxy configuration.
 Build and run the client side app using a qt and c++ ide such as Qt Creator.
 
 
