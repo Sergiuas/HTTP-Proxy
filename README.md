@@ -6,7 +6,7 @@
 
 ## Project Documentation
 
-You can find the project documentation in this [file](./proxydock_srd.pdf).
+You can find the project documentation here: [file](./proxydock_srd.pdf).
 
 ## Overview
 
